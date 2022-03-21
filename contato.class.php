@@ -26,7 +26,7 @@ class Contato{
 	}
 
 	public function getNome($email){
-		$sql = "SELECT nome FROM contatos WHERE email = :email";
+		$sql = "SELECT * FROM contatos WHERE email = :email";
 		$sql = $this->pdo->prepare($sql);
 		$sql->bindValue(":email", $email);
 		$sql->execute();
@@ -34,7 +34,9 @@ class Contato{
 		if ($sql->rowCount() > 0) {
 			$info = $sql->fetch();
 
-			return $info['nome'];
+
+
+			return $info;
 		}else{
 			return '';
 		}
