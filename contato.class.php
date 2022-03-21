@@ -33,6 +33,7 @@ class Contato{
 
 		if ($sql->rowCount() > 0) {
 			$info = $sql->fetch();
+
 			return $info['nome'];
 		}else{
 			return '';
@@ -42,7 +43,7 @@ class Contato{
 
 	public function getAll(){
 		$sql = "SELECT * FROM contatos";
-		$sql = $this->pdo->prepare($sql);
+		$sql = $this->pdo->query($sql);
 
 		if ($sql->rowCount() > 0) {
 			return $sql->fetchAll();
@@ -51,8 +52,47 @@ class Contato{
 		}
 	}
 
-	private function existeEmail($email){
+	public function editar($nome, $email){
+		if ($this->existeEmail($email) == true) {
+			$sql = "UPDATE contatos SET nome = :nome WHERE email = :email";
+			$sql = $this->pdo->prepare($sql);
+			$sql->bindValue(":nome", $nome);
+			$sql->bindValue(":email", $email);
+			$sql->execute();
 
+			return true;
+
+		}else{
+			return false;
+		}
 	}
+
+	public function excluir($email){
+		if ($this->existeEmail($email) == true) {
+			$sql = "DELETE FROM contatos WHERE email = :email";
+			$sql = $this->pdo->prepare($sql);
+			$sql->bindValue(":email", $email);
+			$sql->execute();
+
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	private function existeEmail($email){
+		$sql = "SELECT * FROM contatos WHERE email = :email";
+		$sql = $this->pdo->prepare($sql);
+		$sql->bindValue(":email", $email);
+		$sql->execute();
+
+		if($sql->rowCount() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
 
 }
